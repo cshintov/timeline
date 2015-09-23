@@ -14,7 +14,7 @@ def extract_tweets(tweets):
         #text = ununicode(text)
         #text = unescape(text)
         #tweet_texts.append(parser(text))
-        tweet_texts.append(text)
+        tweet_texts.append(parser(text))
     return tweet_texts
 
 def print_stats(stat_lst, count=2):
