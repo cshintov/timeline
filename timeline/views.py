@@ -21,7 +21,8 @@ def show_tweets(request):
     stat_count = int(request.POST.get("stat_count"))
     tweets = get_tweets(scr_name, twt_count)
     if 'error' in tweets:
-        return HttpResponse(tweets['error'])
+        retry = '<br><a href="/timeline/get_input">Try another user!</a>'
+        return HttpResponse(tweets['error'] + retry)
     hash_tags, mentions = get_stats(tweets, stat_count)
     tweets = extract_tweets(tweets)
     return result(request, tweets, hash_tags, mentions)
