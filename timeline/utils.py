@@ -63,7 +63,7 @@ def get_tweets(scr_name, twt_count=5):
         new_twts = resp.json()
         tweets.extend(new_twts)
         max_id = find_max_id(tweets) - 1
-        if len(new_twts) < 100 or len(tweets) == twt_count:
+        if len(tweets) == twt_count or len(new_twts) == 0:
             break
         rest = twt_count - len(tweets)
     if len(tweets) < twt_count:
