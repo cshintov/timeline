@@ -20,6 +20,8 @@ def show_tweets(request):
     twt_count = int(request.POST.get("tweet_count"))
     stat_count = int(request.POST.get("stat_count"))
     tweets = get_tweets(scr_name, twt_count)
+    if 'error' in tweets:
+        return HttpResponse(tweets['error'])
     hash_tags, mentions = get_stats(tweets, stat_count)
     tweets = extract_tweets(tweets)
     return result(request, tweets, hash_tags, mentions)

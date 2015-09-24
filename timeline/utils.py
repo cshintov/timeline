@@ -47,6 +47,8 @@ def get_tweets(scr_name, twt_count=5):
     params = {'screen_name': scr_name, 'count': twt_count}
 
     resp = requests.get(url, params=params, auth=auth)
+    if resp.statu_code == 404:
+        return {'error':'User Does Not Exist!'}
     resp.raise_for_status() #raises bad_request error if occurred
     tweets = resp.json()
     if twt_count <= 200 and len(tweets) <= 200:
