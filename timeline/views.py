@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 
-from tweets import extract_tweets, get_tweets, get_stats
+from tweets import extract_tweets, get_tweets, get_stats, remove_self
 
 
 def index(request):
@@ -23,7 +23,8 @@ def show_tweets(request):
     if 'error' in tweets:
         retry = '<br><a href="/timeline/get_input">Try another user!</a>'
         return HttpResponse(tweets['error'] + retry)
-    hash_tags, mentions = get_stats(tweets, stat_count)
+    hash_tags, mentions = get_stats(tweets, scr_name, stat_count)
+    mentions = remove_self(mentions, scr_name)
     tweets = extract_tweets(tweets)
     return result(request, tweets, hash_tags, mentions)
 

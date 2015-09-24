@@ -5,6 +5,12 @@ from histogram import histogram, inv_dict, most_freq, sort_dct
 from utils import ununicode, unescape, parser, get_hashtags, \
             get_mentions, get_tweets, get_tweet
 
+
+def remove_self(mentions, scr_name):
+    """ removes mention of scr_name """  
+    return [mention for mention in mentions if not scr_name in mention] 
+
+
 def extract_tweets(tweets):
     """ prints the tweets from tweets: list of tweet dicts """
     tweet_texts = []
@@ -35,13 +41,14 @@ def print_stats(stat_lst, count=2):
     print
 
 
-def get_stats(tweets, count=2):
+def get_stats(tweets, scr_name, count=2):
     """ prints stats about hashtags and user mentions """
     hashtags = get_hashtags(tweets)
     mentions = get_mentions(tweets)
     
     freq_hashtags =  sort_dct(histogram(hashtags))
     freq_mentions =  sort_dct(histogram(mentions))
+    freq_mentions = remove_self(freq_mentions, scr_name)
     return freq_hashtags[:count], freq_mentions[:count]
 
 def main():
@@ -54,7 +61,7 @@ def main():
     tweets = get_tweets(scr_name, twt_count)
     #print extract_tweets(tweets)
     print len(tweets), 'tweets displayed'
-    get_stats(tweets, stat_count)
+    get_stats(tweets, scr_name, stat_count)
     
 
 if  __name__ == '__main__':
