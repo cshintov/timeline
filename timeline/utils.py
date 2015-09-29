@@ -10,6 +10,19 @@ parser = parser().unescape
 APP_KEY = 'LygFznM7If85hSM6bUxiVLi2t'
 APP_SECRET = 'INXtZ3OJ5IttsSJ9KrhwVPWdaL9SVvK4p2elD6nr5QiZfdwwVp'
 
+
+
+def strings_startswith(str_lst, char):
+    """ returns a list of words that starts with char from all the strings
+        str_lst : a list of strings
+    """
+    words = []
+    pattern = r'[^\w](' + char + '\w+)'
+    for string in str_lst:
+        words.extend(re.findall(pattern, ' ' + string))
+    return words
+
+
 def ununicode(text):
     """ removes unicode combinations """
     pat = r'http:\\u\d+'
@@ -48,7 +61,7 @@ def get_tweets(scr_name, twt_count=5):
 
     resp = requests.get(url, params=params, auth=auth)
     if resp.status_code == 404:
-        return {'error':'User Does Not Exist!'}
+        return {'error':'user does not exist!'}
     resp.raise_for_status() #raises bad_request error if occurred
     tweets = resp.json()
     if twt_count <= 200 and len(tweets) <= 200:
@@ -63,6 +76,7 @@ def get_tweets(scr_name, twt_count=5):
         new_twts = resp.json()
         tweets.extend(new_twts)
         max_id = find_max_id(tweets) - 1
+        #if len(new_twts) < 100 or len(tweets) == twt_count:
         if len(tweets) == twt_count or len(new_twts) == 0:
             break
         rest = twt_count - len(tweets)
@@ -87,6 +101,7 @@ def print_tweets(tweets):
 
     print
 
+
 def get_hashtags(tweets):
     """ return hashtags as a list """
     for tweet in tweets:
@@ -95,11 +110,10 @@ def get_hashtags(tweets):
 
 
 def get_mentions(tweets):
-    """ return hashtags as a list """
+    """ return mentions as a list """
     for tweet in tweets:
         for mention in tweet['entities']['user_mentions']:
             yield mention['screen_name']
-
 
 
 def is_retweet(text):
@@ -120,6 +134,7 @@ def get_tweet(tweet):
         except:
             pass
     return text
+
 
 
 if  __name__ == '__main__':

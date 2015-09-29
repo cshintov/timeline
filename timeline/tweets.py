@@ -7,21 +7,22 @@ from utils import ununicode, unescape, parser, get_hashtags, \
 
 
 def remove_self(mentions, scr_name):
-    """ removes mention of scr_name """  
-    return [mention for mention in mentions if not scr_name in mention] 
+    """ removes mention of scr_name """
+    return [mention for mention in mentions if not scr_name in mention]
 
 
-def extract_tweets(tweets):
+def extract_tweets(tweets, cmd_line=False):
     """ prints the tweets from tweets: list of tweet dicts """
     tweet_texts = []
     for tweet in tweets:
         text = get_tweet(tweet)
-        #text = text.encode('unicode-escape')
-        #text = ununicode(text)
-        #text = unescape(text)
-        #tweet_texts.append(parser(text))
+        if cmd_line:
+            text = text.encode('unicode-escape')
+            text = ununicode(text)
+            text = unescape(text)
         tweet_texts.append(parser(text))
     return tweet_texts
+
 
 def print_stats(stat_lst, count=2):
     """ prints count number of stats:list of tuples
@@ -40,9 +41,23 @@ def print_stats(stat_lst, count=2):
             idx += 1
     print
 
+from utils import strings_startswith
+
+def get_hash_mentions(tweets, count=3):
+    """ returns stats about hashtags and mentions from tweets
+        tweets: a list of strings
+    """
+    hashtags = strings_startswith(tweets, '#')
+    mentions = strings_startswith(tweets, '@')
+    freq_hashtags =  sort_dct(histogram(hashtags))
+    freq_mentions =  sort_dct(histogram(mentions))
+    return freq_hashtags[:count], freq_mentions[:count]
+    
 
 def get_stats(tweets, scr_name, count=2):
-    """ prints stats about hashtags and user mentions """
+    """ returns stats about hashtags and user mentions 
+        tweets: a dict of tweet dicts from rest api
+    """
     hashtags = get_hashtags(tweets)
     mentions = get_mentions(tweets)
     
@@ -61,8 +76,9 @@ def main():
     tweets = get_tweets(scr_name, twt_count)
     #print extract_tweets(tweets)
     print len(tweets), 'tweets displayed'
-    get_stats(tweets, scr_name, stat_count)
-    
+    tags, mentions = get_stats(tweets, scr_name, stat_count)
+    print_stats(tags, stat_count)
+    print_stats(mentions, stat_count)
 
 if  __name__ == '__main__':
     main()
